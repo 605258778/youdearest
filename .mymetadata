@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-module
   type="WEB"
-  name="weixin"
+  name="youdearest"
   id="myeclipse.1444922936317"
   context-root="/weixin"
   j2ee-spec="6.0"
-  archive="weixin.war">
+  archive="youdearest.war">
   <attributes>
     <attribute name="webrootdir" value="WebRoot" />
   </attributes>
