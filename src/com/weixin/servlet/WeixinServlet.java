@@ -88,6 +88,8 @@ public class WeixinServlet extends HttpServlet {
 					Message = MessageUtil.initNewsMessage(toUserName, formUserName);
 				}else if("?".equals(content)||"£¿".equals(content)){
 					Message = MessageUtil.initText(toUserName, formUserName, MessageUtil.menutext());
+				}else{
+					Message="ÄãËµÊ²Ã´£¿";
 				}
 			}else if(MessageUtil.MESSAGE_EVENT.equals(msgType)){
 				String eventType = map.get("Event");

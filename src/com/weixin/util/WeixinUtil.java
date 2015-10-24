@@ -22,7 +22,7 @@ import net.sf.json.JSONObject;
 
 public class WeixinUtil {
 	private static final String APPID="wx0d974fd4ef0e9044";
-	private static final String APPSECRIT="5c2086b38d954e6e0d2049f5d3b5a9e9";
+	private static final String APPSECRET="5c2086b38d954e6e0d2049f5d3b5a9e9";
 	private static final String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	/**
 	 * get«Î«Û
@@ -76,15 +76,13 @@ public class WeixinUtil {
 	 * @return
 	 */
 	public static AccessToken getAccessToken(){
-		AccessToken token =new AccessToken();
-		String url = ACCESS_TOKEN_URL.replace("APPID", APPID).replace("APPSECRIT", APPSECRIT);
+		AccessToken token = new AccessToken();
+		String url = ACCESS_TOKEN_URL.replace("APPID", APPID).replace("APPSECRET", APPSECRET);
 		JSONObject jsonObject = doGetStr(url);
 		if(jsonObject!=null){
 			token.setToken(jsonObject.getString("access_token"));
-			token.setExpireIn(jsonObject.getInt("expire_in"));
+			token.setExpireIn(jsonObject.getInt("expires_in"));
 		}
-		
-		return null;
-		
+		return token;
 	}
 }
