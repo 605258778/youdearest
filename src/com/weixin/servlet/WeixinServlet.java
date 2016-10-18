@@ -2,10 +2,8 @@ package com.weixin.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.Map;
 
-import com.weixin.po.TextMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -75,7 +73,7 @@ public class WeixinServlet extends HttpServlet {
 		try {
 			Map<String,String> map = MessageUtil.xmlToMap(request);
 			String toUserName = map.get("ToUserName");
-			String formUserName = map.get("FromUserName");
+			String fromUserName = map.get("FromUserName");
 			String createTime = map.get("CreateTime");
 			String msgType = map.get("MsgType");
 			String content = map.get("Content");
@@ -83,18 +81,22 @@ public class WeixinServlet extends HttpServlet {
 			String Message = null;
 			if(MessageUtil.MESSAGE_TEXT.equals(msgType)){
 				if("1".equals(content)){
-					Message = MessageUtil.initText(toUserName, formUserName, MessageUtil.firstMenu());
+					Message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.firstMenu());
 				}else if("2".equals(content)){
-					Message = MessageUtil.initNewsMessage(toUserName, formUserName);
+					Message = MessageUtil.initNewsMessage(toUserName, fromUserName);
+				}else if("3".equals(content)){
+					Message = MessageUtil.initImageMessage(toUserName, fromUserName);
+				}else if("4".equals(content)){
+					Message = MessageUtil.initMusicMessage(toUserName, fromUserName);
 				}else if("?".equals(content)||"£¿".equals(content)){
-					Message = MessageUtil.initText(toUserName, formUserName, MessageUtil.menutext());
+					Message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menutext());
 				}else{
 					Message="ÄãËµÊ²Ã´£¿";
 				}
 			}else if(MessageUtil.MESSAGE_EVENT.equals(msgType)){
 				String eventType = map.get("Event");
 				if(MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)){
-					Message = MessageUtil.initText(toUserName, formUserName, MessageUtil.menutext());
+					Message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menutext());
 				}
 			}
 			System.out.println(Message);

@@ -1,6 +1,5 @@
 package com.weixin.po;
 
-import java.util.Date;
 
 public class BaseMessage {
 	private String ToUserName;
