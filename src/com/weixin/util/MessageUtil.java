@@ -38,7 +38,18 @@ public class MessageUtil {
 	public static final String MESSAGE_UNSUBSCRIBE = "unsubscribe";
 	public static final String MESSAGE_CLICK = "CLICK";
 	public static final String MESSAGE_VIEW = "VIEW";
+	public static final String MESSAGE_SCANCODE= "scancode_push";
 
+	
+	public static String menuText(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("欢迎您的关注，请按照菜单提示进行操作：\n\n");
+		sb.append("1、课程介绍\n");
+		sb.append("2、慕课网介绍\n");
+		sb.append("3、词组翻译\n\n");
+		sb.append("回复？调出此菜单。");
+		return sb.toString();
+	}
 	/**
 	 * xml转map集合
 	 * 
