@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.dom4j.DocumentException;
 
 import com.weixin.util.MessageUtil;
+import com.weixin.util.WeixinUtil;
 import com.weixin.util.checkUtil;
 
 
@@ -88,10 +89,21 @@ public class WeixinServlet extends HttpServlet {
 					Message = MessageUtil.initImageMessage(toUserName, fromUserName);
 				}else if("4".equals(content)){
 					Message = MessageUtil.initMusicMessage(toUserName, fromUserName);
+				}else if(content.startsWith("∑≠“Î")){
+					String word = content.replaceAll("∑≠“Î", "").trim();
+					if("".equals(word)){
+						Message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.threeMenu());
+					}else{
+						Message = MessageUtil.initText(toUserName, fromUserName, WeixinUtil.translate(word));
+					}
 				}else if("?".equals(content)||"£ø".equals(content)){
 					Message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menutext());
 				}else{
-					Message="ƒ„Àµ ≤√¥£ø";
+					if("".equals(content)){
+						Message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.threeMenu());
+					}else{
+						Message = MessageUtil.initText(toUserName, fromUserName, WeixinUtil.translate(content));
+					}
 				}
 			}else if(MessageUtil.MESSAGE_EVENT.equals(msgType)){
 				String eventType = map.get("Event");

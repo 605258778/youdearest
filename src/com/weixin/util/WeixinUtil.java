@@ -10,26 +10,41 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
 import com.weixin.mean.Button;
 import com.weixin.mean.ClickButton;
 import com.weixin.mean.Menu;
 import com.weixin.mean.ViewButton;
 import com.weixin.po.AccessToken;
+import com.weixin.trans.Data;
+import com.weixin.trans.Parts;
+import com.weixin.trans.Symbols;
+import com.weixin.trans.TransResult;
 
 
 public class WeixinUtil {
@@ -40,8 +55,11 @@ public class WeixinUtil {
 	private static final String CREATE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 	private static final String QUERY_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN";
 	private static final String DELETE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
+	//ç”³è¯·è€…å¼€å‘è€…idï¼Œå®é™…ä½¿ç”¨æ—¶è¯·ä¿®æ”¹æˆå¼€å‘è€…è‡ªå·±çš„appid
+	private static final String TRANS_APPID = "20161019000030468";
+	private static final String TRANS_URL = "http://api.fanyi.baidu.com/api/trans/vip/translate";
 	/**
-	 * getÇëÇó
+	 * getè¯·æ±‚
 	 * @param url
 	 * @return
 	 */
@@ -58,7 +76,7 @@ public class WeixinUtil {
 		return jsonObject;
 	}
 	/**
-	 * postÇëÇó
+	 * postè¯·æ±‚
 	 * @param url
 	 * @param outStr
 	 * @return
@@ -79,7 +97,7 @@ public class WeixinUtil {
 		return jsonObject;
 	}
 	/**
-	 * »ñÈ¡access_token 
+	 * è·å–access_token 
 	 * @return
 	 * @throws IOException 
 	 * @throws ParseException 
@@ -96,7 +114,7 @@ public class WeixinUtil {
 	}
 	
 	/**
-	 * ÎÄ¼şÉÏ´«
+	 * æ–‡ä»¶ä¸Šä¼ 
 	 * @param filePath
 	 * @param accessToken
 	 * @param type
@@ -109,13 +127,13 @@ public class WeixinUtil {
 	public static String upload(String filePath, String accessToken,String type) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
 		File file = new File(filePath);
 		if (!file.exists() || !file.isFile()) {
-			throw new IOException("ÎÄ¼ş²»´æÔÚ");
+			throw new IOException("æ–‡ä»¶ä¸å­˜åœ¨");
 		}
 
 		String url = UPLOAD_URL.replace("ACCESS_TOKEN", accessToken).replace("TYPE",type);
 		
 		URL urlObj = new URL(url);
-		//Á¬½Ó
+		//è¿æ¥
 		HttpURLConnection con = (HttpURLConnection) urlObj.openConnection();
 
 		con.setRequestMethod("POST"); 
@@ -123,11 +141,11 @@ public class WeixinUtil {
 		con.setDoOutput(true);
 		con.setUseCaches(false); 
 
-		//ÉèÖÃÇëÇóÍ·ĞÅÏ¢
+		//è®¾ç½®è¯·æ±‚å¤´ä¿¡æ¯
 		con.setRequestProperty("Connection", "Keep-Alive");
 		con.setRequestProperty("Charset", "UTF-8");
 
-		//ÉèÖÃ±ß½ç
+		//è®¾ç½®è¾¹ç•Œ
 		String BOUNDARY = "----------" + System.currentTimeMillis();
 		con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
 
@@ -140,13 +158,13 @@ public class WeixinUtil {
 
 		byte[] head = sb.toString().getBytes("utf-8");
 
-		//»ñµÃÊä³öÁ÷
+		//è·å¾—è¾“å‡ºæµ
 		OutputStream out = new DataOutputStream(con.getOutputStream());
-		//Êä³ö±íÍ·
+		//è¾“å‡ºè¡¨å¤´
 		out.write(head);
 
-		//ÎÄ¼şÕıÎÄ²¿·Ö
-		//°ÑÎÄ¼şÒÑÁ÷ÎÄ¼şµÄ·½Ê½ ÍÆÈëµ½urlÖĞ
+		//æ–‡ä»¶æ­£æ–‡éƒ¨åˆ†
+		//æŠŠæ–‡ä»¶å·²æµæ–‡ä»¶çš„æ–¹å¼ æ¨å…¥åˆ°urlä¸­
 		DataInputStream in = new DataInputStream(new FileInputStream(file));
 		int bytes = 0;
 		byte[] bufferOut = new byte[1024];
@@ -155,8 +173,8 @@ public class WeixinUtil {
 		}
 		in.close();
 
-		//½áÎ²²¿·Ö
-		byte[] foot = ("\r\n--" + BOUNDARY + "--\r\n").getBytes("utf-8");//¶¨Òå×îºóÊı¾İ·Ö¸ôÏß
+		//ç»“å°¾éƒ¨åˆ†
+		byte[] foot = ("\r\n--" + BOUNDARY + "--\r\n").getBytes("utf-8");//å®šä¹‰æœ€åæ•°æ®åˆ†éš”çº¿
 
 		out.write(foot);
 
@@ -167,7 +185,7 @@ public class WeixinUtil {
 		BufferedReader reader = null;
 		String result = null;
 		try {
-			//¶¨ÒåBufferedReaderÊäÈëÁ÷À´¶ÁÈ¡URLµÄÏìÓ¦
+			//å®šä¹‰BufferedReaderè¾“å…¥æµæ¥è¯»å–URLçš„å“åº”
 			reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -195,33 +213,33 @@ public class WeixinUtil {
 	}
 	
 	/**
-	 * ×é×°²Ëµ¥
+	 * ç»„è£…èœå•
 	 * @return
 	 */
 	public static Menu initMenu(){
 		Menu menu = new Menu();
 		ClickButton button11 = new ClickButton();
-		button11.setName("click²Ëµ¥");
+		button11.setName("clickèœå•");
 		button11.setType("click");
 		button11.setKey("11");
 		
 		ViewButton button21 = new ViewButton();
-		button21.setName("view²Ëµ¥");
+		button21.setName("viewèœå•");
 		button21.setType("view");
 		button21.setUrl("http://www.imooc.com");
 		
 		ClickButton button31 = new ClickButton();
-		button31.setName("É¨ÂëÊÂ¼ş");
+		button31.setName("æ‰«ç äº‹ä»¶");
 		button31.setType("scancode_push");
 		button31.setKey("31");
 		
 		ClickButton button32 = new ClickButton();
-		button32.setName("µØÀíÎ»ÖÃ");
+		button32.setName("åœ°ç†ä½ç½®");
 		button32.setType("location_select");
 		button32.setKey("32");
 		
 		Button button = new Button();
-		button.setName("²Ëµ¥");
+		button.setName("èœå•");
 		button.setSub_button(new Button[]{button31,button32});
 		
 		menu.setButton(new Button[]{button11,button21,button});
@@ -252,5 +270,45 @@ public class WeixinUtil {
 			result = jsonObject.getInt("errcode");
 		}
 		return result;
+	}
+	
+	public static String translate(String source) throws ParseException, IOException{
+		int salt = 1435660288;
+		
+		// appid+q+salt+å¯†é’¥ çš„MD5å€¼
+		
+		StringBuilder md5String = new StringBuilder();
+		md5String.append(TRANS_APPID).append(source).append(salt).append("ib64evOKl59xg9BL6qbA");
+		String sign = DigestUtils.md5Hex(md5String.toString().replace("KEYWORD", URLEncoder.encode("UTF-8")));
+		StringBuffer urlString = new StringBuffer();
+		urlString.append(TRANS_URL);
+		urlString.append("?q="+source);
+		urlString.append("&from=auto");
+		urlString.append("&to=auto");
+		urlString.append("&appid="+TRANS_APPID);
+		urlString.append("&salt="+salt);
+		urlString.append("&sign="+sign);
+	    String url = urlString.toString().replace("KEYWORD", URLEncoder.encode("UTF-8"));
+	    System.out.println(url);
+	    JSONObject jsonObject = doGetStr(url);
+	    System.out.println(jsonObject);
+	    JSONArray array = (JSONArray) jsonObject.get("trans_result");
+		JSONObject dst = (JSONObject) array.get(0);
+		String text = dst.getString("dst");
+		text = URLDecoder.decode(text, "utf-8");
+	    System.out.println(text);
+		return text;
+	}
+	
+	public static String translateFull(String source) throws ParseException, IOException{
+		String url = "http://api.fanyi.baidu.com/api/trans/vip/translate?q=apple&from=auto&to=auto&appid=y357Yp8Od0PIYmgx5V8YqfSW&salt=1435660288&sign=4AP5BoQAkXG1wVrRFH2qPApNuX7Y1QlZ";
+		url = url.replace("KEYWORD", URLEncoder.encode(source, "UTF-8"));
+		JSONObject jsonObject = doGetStr(url);
+		StringBuffer dst = new StringBuffer();
+		List<Map> list = (List<Map>) jsonObject.get("trans_result");
+		for(Map map : list){
+			dst.append(map.get("dst"));
+		}
+		return dst.toString();
 	}
 }

@@ -232,4 +232,15 @@ public class MessageUtil {
 		xstream.alias("xml", musicMessage.getClass());
 		return xstream.toXML(musicMessage);
 	}
+	
+	public static String threeMenu(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("词组翻译使用指南\n\n");
+		sb.append("使用示例：\n");
+		sb.append("翻译足球\n");
+		sb.append("翻译中国足球\n");
+		sb.append("翻译football\n\n");
+		sb.append("回复？显示主菜单。");
+		return sb.toString();
+	}
 }
