@@ -9,6 +9,14 @@
     <servlet-name>weixinServlet</servlet-name>
     <url-pattern>/wx.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>CreatMeanServlet</servlet-name>
+    <servlet-class>com.weixin.servlet.CreatMeanServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CreatMeanServlet</servlet-name>
+    <url-pattern>/creatMean.do</url-pattern>
+  </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

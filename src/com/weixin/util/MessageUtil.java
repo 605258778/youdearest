@@ -152,7 +152,7 @@ public class MessageUtil {
 		News news = new News();
 		news.setTitle("µ⁄“ª∏ˆ±ÍÃ‚");
 		news.setDescription("À…µ∫∑„À…µ∫∑„À…µ∫∑„À…µ∫∑„…Ì∑›");
-		news.setPicUrl("http://22065828.nat123.net/weixin/image/title.png");
+		news.setPicUrl("http://youdearest.duapp.com/weixin/image/title.png");
 		news.setUrl("www.baidu.com");
 		newsList.add(news);
 		newMessage.setFromUserName(toUserName);
@@ -209,8 +209,8 @@ public class MessageUtil {
 		music.setThumbMediaId("-FsqAojlWYKG7wBl9jcldhwHrxzYSYr7ANxyibY019eANM93qrSkWE3HzLhVwoQy");
 		music.setTitle("see you again");
 		music.setDescription("ÀŸ7∆¨Œ≤«˙");
-		music.setMusicUrl("http://22065828.nat123.net/Weixin/resource/See You Again.mp3");
-		music.setHQMusicUrl("http://22065828.nat123.net/Weixin/resource/See You Again.mp3");
+		music.setMusicUrl("http://youdearest.duapp.com/resource/See You Again.mp3");
+		music.setHQMusicUrl("http://youdearest.duapp.com/resource/See You Again.mp3");
 		
 		MusicMessage musicMessage = new MusicMessage();
 		musicMessage.setFromUserName(toUserName);
